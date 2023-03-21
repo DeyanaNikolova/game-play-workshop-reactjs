@@ -18,6 +18,7 @@ import { GameDetails } from './components/GameDetails/GameDetails';
 function App() {
   const navigate = useNavigate();
   const [games, setGames] = useState([]);
+  const [auth, setAuth] = useState({});
 
 
   useEffect(() => {
@@ -36,14 +37,25 @@ function App() {
   };
 
   const onLoginSubmit = async (data) => {
-    const result = await authService.login(data);
+    try {
+      const result = await authService.login(data);
+      setAuth(result);
+      navigate('/catalogue');
 
-    console.log(result);
-
+    } catch (error) {
+      console.log('There is a problem');
+    }
   };
 
+  const context = {
+    onLoginSubmit,
+    userId: auth._id,
+    token: auth.accessToken,
+    userEmail: auth.email
+  }
+
   return (
-    <AuthContext.Provider value={{ onLoginSubmit }}>
+    <AuthContext.Provider value={context}>
       <div id="box">
         <Header />
         <main id="main-content">

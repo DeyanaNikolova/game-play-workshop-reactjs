@@ -1,11 +1,11 @@
- const request = async (method, url, data) => {
+const request = async (method, url, data) => {
 
     const options = {};
-    
-    if(method !== 'GET'){
+
+    if (method !== 'GET') {
         options.method = method;
-        if(data){
-            options.headers ={
+        if (data) {
+            options.headers = {
                 'content-type': 'application/json'
             };
             options.body = JSON.stringify(data);
@@ -14,13 +14,17 @@
 
     const response = await fetch(url, options);
 
-    try {
-        const result = await response.json();
-
-        return result;
-    } catch (err) {
+    if (response.status === 204) {
         return {};
     }
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw result;
+    }
+
+    return result;
 };
 
 export const get = request.bind(null, 'GET');
