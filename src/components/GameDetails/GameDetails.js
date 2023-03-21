@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import * as gameService from '../../services/gameService';
-import * as commentService from '../../services/commentService';
+import { gameServiceFactory } from '../../services/gameService';
+import { commentServiceFactory} from '../../services/commentService';
+import { useService } from '../../hooks/useService';
+
 
 export const GameDetails = () => {
     const [username, setUsername] = useState('');
@@ -9,8 +11,11 @@ export const GameDetails = () => {
     const [comments, setComments] = useState([]);
     const {gameId} = useParams();
     const [game, setGame] = useState([]);
+    const gameService = useService(gameServiceFactory);
+    const commentService = useService(commentServiceFactory);
 
     useEffect(() => {
+       
         gameService.getOne(gameId)
         .then(result => {
             setGame(result);
