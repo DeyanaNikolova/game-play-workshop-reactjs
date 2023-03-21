@@ -11,6 +11,7 @@ import { Footer } from './components/Footer/Footer';
 import { Home } from './components/Home/Home';
 import { Login } from './components/Login/Login';
 import { Register } from './components/Register/Register';
+import { Logout } from './components/Logout/Logout';
 import { CreateGame } from './components/CreateGame/CreateGame';
 import { Catalogue } from './components/Catalogue/Catalogue';
 import { GameDetails } from './components/GameDetails/GameDetails';
@@ -63,17 +64,24 @@ function App() {
     }
   };
 
-  const context = {
+  const onLogout = async () => {
+    // TODO: authorized requests
+//    await authService.logout()
+    setAuth({});
+  };
+
+  const contextValues = {
     onLoginSubmit,
     onRegisterSubmit,
+    onLogout,
     userId: auth._id,
     token: auth.accessToken,
     userEmail: auth.email,
     isAuthenticated: !!auth.accessToken
-  }
+  };
 
   return (
-    <AuthContext.Provider value={context}>
+    <AuthContext.Provider value={contextValues}>
       <div id="box">
         <Header />
         <main id="main-content">
@@ -81,6 +89,7 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
+            <Route path='/logout' element={<Logout />} />
             <Route path='/create-game' element={<CreateGame onCreateGameSubmit={onCreateGameSubmit} />} />
             <Route path='/catalogue' element={<Catalogue games={games} />} />
             <Route path='/catalogue/:gameId' element={<GameDetails />} />
