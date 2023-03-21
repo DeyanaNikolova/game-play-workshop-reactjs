@@ -1,3 +1,6 @@
+import { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+
 import * as gameService from './services/gameService';
 
 import { Header } from './components/Header/Header';
@@ -28,7 +31,7 @@ function App() {
    navigate('/catalogue');
   };
 
-  
+
   return (
     <div id="box">
       <Header />
