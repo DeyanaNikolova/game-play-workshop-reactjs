@@ -1,45 +1,56 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState, useContext } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+
 import { gameServiceFactory } from '../../services/gameService';
-import { commentServiceFactory} from '../../services/commentService';
+import { commentServiceFactory } from '../../services/commentService';
 import { useService } from '../../hooks/useService';
+import { AuthContext } from '../../contexts/AuthContext';
 
 
 export const GameDetails = () => {
+    const { userId } = useContext(AuthContext);
     const [username, setUsername] = useState('');
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
-    const {gameId} = useParams();
+    const { gameId } = useParams();
     const [game, setGame] = useState([]);
+    const navigate = useNavigate();
     const gameService = useService(gameServiceFactory);
     const commentService = useService(commentServiceFactory);
 
     useEffect(() => {
-       
+
         gameService.getOne(gameId)
-        .then(result => {
-            setGame(result);
-            return commentService.getAll(gameId);
-        })
-        .then(result => {
-            setComments(result);
-        })
+            .then(result => {
+                setGame(result);
+                return commentService.getAll(gameId);
+            })
+            .then(result => {
+                setComments(result);
+            })
 
     }, [gameId]);
-   
 
-    const onCommentSubmit =async (e) => {
+
+    const onCommentSubmit = async (e) => {
         e.preventDefault();
 
-      await commentService.create({
-            gameId,
+      const result = await commentService.addComment(gameId, {
             username,
             comment
         });
+        setGame(state => ({ ...state, comments: { ...state.comments, [result._id]: result } }));
         setUsername('');
         setComment('');
     };
+    const isOwner = game._ownerId === userId;
 
+    const onDeleteClick = async () => {
+       await gameService.deleteGame(game._id);
+       // TODO: delete from state
+       navigate('/catalogue');
+    };
+ 
     return (
         <section id="game-details">
             <h1>Game Details</h1>
@@ -54,31 +65,34 @@ export const GameDetails = () => {
 
                 <p className="text">{game.summary}</p>
 
-        
+
                 <div className="details-comments">
                     <h2>Comments:</h2>
                     <ul>
-                       {comments.map(x => 
-                        <li key={x._id} className="comment">
-                            <p>{x.username}: {x.comment}</p>
-                        </li>
-                    )}
-                        
+                        {comments.map(x =>
+                            <li key={x._id} className="comment">
+                                <p>{x.username}: {x.comment}</p>
+                            </li>
+                        )}
+
                         <li className="comment">
                             <p>Content: The best game.</p>
                         </li>
                     </ul>
-                    {comments.length === 0 && 
-                         <p className="no-comment">No comments.</p>
+                    {comments.length === 0 &&
+                        <p className="no-comment">No comments.</p>
                     }
-                   
+
                 </div>
 
                 {/* <!-- Edit/Delete buttons ( Only for creator of this game )  --> */}
-                <div className="buttons">
-                    <a href="/edit" className="button">Edit</a>
-                    <a href="/delete" className="button">Delete</a>
-                </div>
+                {isOwner && (
+                    <div className="buttons">
+                        <Link to={`/catalogue/${game._id}/edit`} className="button">Edit</Link>
+                        <button className="button" onClick={onDeleteClick}>Delete</button>
+                    </div>
+                )}
+
             </div>
 
             {/* <!-- Bonus --> */}

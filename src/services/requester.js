@@ -4,6 +4,7 @@ const request = async (method, token, url, data) => {
   
     if (method !== 'GET') {
         options.method = method;
+
         if (data) {
             options.headers = {
                 'content-type': 'application/json'
@@ -16,7 +17,7 @@ const request = async (method, token, url, data) => {
         options.headers = {
             ...options.headers,
             'X-Authorization': token
-        }
+        };
     }
 
     const response = await fetch(url, options);
@@ -44,4 +45,4 @@ export const requestFactory = (token) => {
         patch: request.bind(null, 'PATCH', token),
         del: request.bind(null, 'DELETE', token)
     };
-}
+};
