@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import * as gameService from './services/gameService';
+import { AuthContext } from './contexts/AuthContext';
 
 import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer/Footer';
@@ -15,6 +16,7 @@ import { GameDetails } from './components/GameDetails/GameDetails';
 function App() {
   const navigate = useNavigate();
   const [games, setGames] = useState([]);
+
 
   useEffect(() => {
     gameService.getAll()
@@ -31,8 +33,13 @@ function App() {
    navigate('/catalogue');
   };
 
+  const onLoginSubmit = async (data) => {
+  console.log(data);
+
+  };
 
   return (
+    <AuthContext.Provider value={{onLoginSubmit}}>
     <div id="box">
       <Header />
       <main id="main-content">
@@ -47,6 +54,7 @@ function App() {
       </main>
       <Footer />
     </div>
+    </AuthContext.Provider>
   );
 }
 
