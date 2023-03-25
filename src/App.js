@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import { gameServiceFactory } from './services/gameService';
-import { authServiceFactory } from './services/authService';
-import { AuthContext } from './contexts/AuthContext';
+
+import { AuthProvider } from './contexts/AuthContext';
 
 
 import { Header } from './components/Header/Header';
@@ -20,9 +20,7 @@ import { EditGame } from './components/EditGame/EditGame';
 function App() {
     const navigate = useNavigate();
     const [games, setGames] = useState([]);
-    const [auth, setAuth] = useState({});
-    const gameService = gameServiceFactory(auth.accessToken);
-    const authService = authServiceFactory(auth.accessToken);
+    const gameService = gameServiceFactory(); // auth.accessToken
 
     useEffect(() => {
         gameService.getAll()
@@ -39,59 +37,22 @@ function App() {
         navigate('/catalogue');
     };
 
-    const onLoginSubmit = async (data) => {
-        try {
-            const result = await authService.login(data);
+ 
 
-            setAuth(result);
-            
-            navigate('/catalogue');
 
-        } catch (error) {
-            console.log('There is a problem');
-        }
-    };
 
-    const onRegisterSubmit = async (values) => {
-        const { confirmPassword, ...registerData } = values;
-
-        if (confirmPassword !== registerData.password) {
-            return;
-        }
-        try {
-            const result = await authService.register(registerData);
-            setAuth(result);
-            navigate('/catalogue');
-
-        } catch (error) {
-            console.log('There is a problem');
-        }
-    };
-
-    const onLogout = async () => {
-        await authService.logout();
-        setAuth({});
-    };
 
     const onEditGameSubmit = async (values) => {
-      const editGame =  await gameService.edit(values._id, values);
-     
-      setGames(state => state.map(x => x._id === values._id ? editGame : x))
-      navigate(`/catalogue/${values._id}`);
+        const editGame = await gameService.edit(values._id, values);
+
+        setGames(state => state.map(x => x._id === values._id ? editGame : x))
+        navigate(`/catalogue/${values._id}`);
     };
 
-    const contextValues = {
-        onLoginSubmit,
-        onRegisterSubmit,
-        onLogout,
-        userId: auth._id,
-        token: auth.accessToken,
-        userEmail: auth.email,
-        isAuthenticated: !!auth.accessToken
-    };
+
 
     return (
-        <AuthContext.Provider value={contextValues}>
+        <AuthProvider>
             <div id="box">
                 <Header />
                 <main id="main-content">
@@ -103,12 +64,12 @@ function App() {
                         <Route path='/create-game' element={<CreateGame onCreateGameSubmit={onCreateGameSubmit} />} />
                         <Route path='/catalogue' element={<Catalogue games={games} />} />
                         <Route path='/catalogue/:gameId' element={<GameDetails />} />
-                        <Route path='/catalogue/:gameId/edit' element={<EditGame onEditGameSubmit={onEditGameSubmit}/>} />
+                        <Route path='/catalogue/:gameId/edit' element={<EditGame onEditGameSubmit={onEditGameSubmit} />} />
                     </Routes>
                 </main>
                 <Footer />
             </div>
-        </AuthContext.Provider>
+        </AuthProvider>
     );
 }
 
