@@ -5,8 +5,7 @@ export const AddComment = ({
 }) => {
 
     const { values, onSubmit, changeHandler } = useForm({
-       // author: '',
-        comment: '',
+        comment: ''
     }, onCommentSubmit);
     return (
         <article className="create-comment">

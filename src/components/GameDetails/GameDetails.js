@@ -30,14 +30,16 @@ export const GameDetails = () => {
             });
     }, [gameId]);
 
+   
 
     const onCommentSubmit = async (values) => {
-        const result = await commentService.addComment(gameId, values);
+        const response = await commentService.addComment(gameId, values.comment);
         setGame(state => ({
             ...state,
-            comments: [...state.comments, result]
+            comments: [...state.comments, response]
         }));
     }
+  
     const isOwner = game._ownerId === userId;
 
     const onDeleteClick = async () => {
@@ -65,17 +67,13 @@ export const GameDetails = () => {
                     <ul>
                        {game.comments && game.comments.map(x =>
                             <li key={x._id} className="comment">
-                                <p> {x.comment}</p>
+                                <p>{x.author.email} {x.comment}</p>
                             </li>
-
-                            // <li className="comment">
-                            //     <p>Content: {x.comment}</p>
-                            // </li>
                         )}
                     </ul>
-                    {/* {!Object.valies(game.comments).length &&
+                    {!game.comments.length &&
                         <p className="no-comment">No comments.</p>
-                    } */}
+                    } 
                 </div>
                 {isOwner && (
                     <div className="buttons">
