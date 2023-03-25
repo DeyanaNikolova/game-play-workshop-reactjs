@@ -37,19 +37,12 @@ function App() {
         navigate('/catalogue');
     };
 
- 
-
-
-
-
     const onEditGameSubmit = async (values) => {
         const editGame = await gameService.edit(values._id, values);
 
         setGames(state => state.map(x => x._id === values._id ? editGame : x))
         navigate(`/catalogue/${values._id}`);
     };
-
-
 
     return (
         <AuthProvider>
