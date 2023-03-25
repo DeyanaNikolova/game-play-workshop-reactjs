@@ -1,7 +1,7 @@
 const request = async (method, token, url, data) => {
 
     const options = {};
-  
+
     if (method !== 'GET') {
         options.method = method;
 
@@ -13,7 +13,7 @@ const request = async (method, token, url, data) => {
         }
     }
 
-    if(token){
+    if (token) {
         options.headers = {
             ...options.headers,
             'X-Authorization': token
@@ -36,8 +36,15 @@ const request = async (method, token, url, data) => {
 };
 
 
-
 export const requestFactory = (token) => {
+    if (!token) {
+        const serializedAuth = localStorage.getItem('auth');
+
+        if (serializedAuth) {
+            const auth = JSON.parse(serializedAuth);
+            token = auth.accessToken;
+        }
+    }
     return {
         get: request.bind(null, 'GET', token),
         post: request.bind(null, 'POST', token),

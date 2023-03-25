@@ -2,12 +2,10 @@ import { requestFactory } from './requester';
 
 
 const baseUrl = 'http://localHost:3030/data/comments';
+const request = requestFactory();
 
 
-export const commentServiceFactory = (token) => {
-    const request = requestFactory(token);
-
-    const getAll = async (gameId) => {
+    export const getAll = async (gameId) => {
         const query = encodeURIComponent(`gameId="${gameId}"`);
     
         const result = await request.get(`${baseUrl}?where=${query}`);
@@ -17,15 +15,13 @@ export const commentServiceFactory = (token) => {
         return comments;
     };
 
-    const addComment = async (data) => {
-        const result = await request.post(baseUrl, data);
+   export const addComment = async (gameId, comment) => {
+
+        const result = await request.post(baseUrl, { gameId, comment });
+
         return result;
     };
 
-    return {
-        getAll,
-        addComment
-    }
-};
+
 
 
