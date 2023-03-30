@@ -35,11 +35,16 @@ export const GameProvider = ({
         navigate(`/catalogue/${values._id}`);
     };
 
+    const getGameById = (gameId) => {
+        return games.find(game => game._id === gameId)
+    }
+
     const contextValues = {
         games,
         onCreateGameSubmit,
-        onEditGameSubmit
-    }
+        onEditGameSubmit,
+        getGameById
+    };
 
     return (
         <>

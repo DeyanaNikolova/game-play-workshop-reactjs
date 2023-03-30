@@ -14,6 +14,7 @@ import { Catalogue } from './components/Catalogue/Catalogue';
 import { GameDetails } from './components/GameDetails/GameDetails';
 import { EditGame } from './components/EditGame/EditGame';
 import { RouteGuard } from './components/common/RouteGuard';
+import { GameOwner } from './components/common/GameOwner';
 
 function App() {
 
@@ -31,7 +32,11 @@ function App() {
                             <Route path='/catalogue/:gameId' element={<GameDetails />} />
 
                             <Route element={<RouteGuard />}>
-                                <Route path='/catalogue/:gameId/edit' element={<EditGame />} />
+                                <Route path='/catalogue/:gameId/edit' element={
+                                    <GameOwner>
+                                        <EditGame />
+                                    </GameOwner>
+                                } />
                                 <Route path='/create-game' element={<CreateGame />} />
                                 <Route path='/logout' element={<Logout />} />
                             </Route>
