@@ -1,7 +1,7 @@
 import { requestFactory } from './requester';
 
 
-const baseUrl = 'http://localHost:3030/data/comments';
+const baseUrl = 'http://localhost:3030/data/comments';
 const request = requestFactory();
 
 

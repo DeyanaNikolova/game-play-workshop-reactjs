@@ -26,7 +26,7 @@ export const gameServiceFactory = (token) => {
     const edit = (gameId, data) => request.put(`${baseUrl}/${gameId}`, data);
     
 
-    const deleteGame =  (gameId) =>  request.del(`${baseUrl}/${gameId}`);
+    const deleteGame = (gameId) =>  request.del(`${baseUrl}/${gameId}`);
     
   
     return {
