@@ -29,8 +29,8 @@ export const Login = () => {
                     <input
                         type="email"
                         id="email"
-                        name={LoginFormKeys.Email}
                         placeholder="Sokka@gmail.com"
+                        name={LoginFormKeys.Email}
                         value={values[LoginFormKeys.Email]}
                         onChange={changeHandler}
                     />
