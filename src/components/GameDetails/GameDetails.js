@@ -1,17 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useReducer } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
 import { gameServiceFactory } from '../../services/gameService';
 import * as commentService from '../../services/commentService';
 import { useService } from '../../hooks/useService';
 import { useAuthContext } from '../../contexts/AuthContext';
+
 import { AddComment } from './AddComment/AddComment';
+import { gameReducer } from '../../reducer/gameReducer';
 
 
 export const GameDetails = () => {
     const { gameId } = useParams();
-    const { userId, isAuthenticated } = useAuthContext();
-    const [game, setGame] = useState([]);
+    const { userId, isAuthenticated, userEmail } = useAuthContext();
+    const [game, dispatch] = useReducer(gameReducer, {});
     const gameService = useService(gameServiceFactory);
     const navigate = useNavigate();
 
@@ -22,24 +24,24 @@ export const GameDetails = () => {
             commentService.getAll(gameId)
         ])
             .then(([gameData, comments]) => {
-              console.log(comments);
-               setGame({
-                ...gameData,
-               comments
-               });
+                const gameState = {
+                    ...gameData,
+                    comments
+                }
+                dispatch({ type: 'GAME_FETCH', payload: gameState });
             });
     }, [gameId]);
 
-   
 
     const onCommentSubmit = async (values) => {
         const response = await commentService.addComment(gameId, values.comment);
-        setGame(state => ({
-            ...state,
-            comments: [...state.comments, response]
-        }));
+        dispatch({
+            type: 'COMMENT_ADD',
+            payload: response,
+            userEmail
+        });
     }
-  
+
     const isOwner = game._ownerId === userId;
 
     const onDeleteClick = async () => {
@@ -65,16 +67,18 @@ export const GameDetails = () => {
                 <div className="details-comments">
                     <h2>Comments:</h2>
                     <ul>
-                       {game.comments && game.comments.map(x =>
+                        {game.comments && game.comments.map(x => (
                             <li key={x._id} className="comment">
                                 <p>{x.author.email} {x.comment}</p>
                             </li>
-                        )}
+                        ))}
                     </ul>
-                    {!game.comments.length &&
+
+                    {!game.comments?.length && (
                         <p className="no-comment">No comments.</p>
-                    } 
+                    )}
                 </div>
+
                 {isOwner && (
                     <div className="buttons">
                         <Link to={`/catalogue/${game._id}/edit`} className="button">Edit</Link>
@@ -83,7 +87,7 @@ export const GameDetails = () => {
                 )}
 
             </div>
-            {isAuthenticated && (<AddComment onCommentSubmit={onCommentSubmit} />)}
+            {isAuthenticated && <AddComment onCommentSubmit={onCommentSubmit} />}
         </section>
     );
 };
