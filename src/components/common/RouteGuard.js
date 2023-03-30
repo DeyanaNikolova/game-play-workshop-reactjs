@@ -1,7 +1,18 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from 'react-router-dom';
 
-import { useAuthContext } from "../../contexts/AuthContext";
+import { useAuthContext } from '../../contexts/AuthContext';
 
+
+export const RouteGuard = ({
+    children
+}) => {
+    const { isAuthenticated  } = useAuthContext();
+    if(!isAuthenticated){
+        return <Navigate to="/login" />;
+    }
+
+    return children ? children : <Outlet />;  
+};
 
 // export const RouteGuard = ({
 //     children
@@ -17,14 +28,3 @@ import { useAuthContext } from "../../contexts/AuthContext";
 //         </>
 //     );
 // };
-
-export const RouteGuard = ({
-    children
-}) => {
-    const { isAuthenticated  } = useAuthContext();
-    if(!isAuthenticated){
-        return <Navigate to="/login" />;
-    }
-
-    return children ? children : <Outlet />;  
-};

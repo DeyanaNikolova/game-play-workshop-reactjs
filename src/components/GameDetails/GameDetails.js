@@ -28,7 +28,7 @@ export const GameDetails = () => {
             .then(([gameData, comments]) => {
                 const gameState = {
                     ...gameData,
-                    comments
+                    comments,
                 }
                 dispatch({ type: 'GAME_FETCH', payload: gameState });
             });
@@ -37,6 +37,7 @@ export const GameDetails = () => {
 
     const onCommentSubmit = async (values) => {
         const response = await commentService.addComment(gameId, values.comment);
+
         dispatch({
             type: 'COMMENT_ADD',
             payload: response,
@@ -47,7 +48,7 @@ export const GameDetails = () => {
     const isOwner = game._ownerId === userId;
 
     const onDeleteClick = async () => {
-        //eslint-disable-next-line no-restricted-globals
+        // eslint-disable-next-line no-restricted-globals
         const confirmed = confirm(`Are you sure you want to delele ${game.title}?`);
         // showDeleteModal() 
         if(confirmed){

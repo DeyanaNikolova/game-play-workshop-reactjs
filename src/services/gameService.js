@@ -1,4 +1,4 @@
-import { requestFactory }  from './requester';
+import { requestFactory } from './requester';
 
 
 const baseUrl = 'http://localhost:3030/data/games';
@@ -10,25 +10,25 @@ export const gameServiceFactory = (token) => {
     const getAll = async () => {
         const result = await request.get(baseUrl);
         const games = Object.values(result);
+    
         return games;
     };
     
-     const getOne = async (gameId) => {
+    const getOne = async (gameId) => {
         const result = await request.get(`${baseUrl}/${gameId}`);
+    
         return result;
     };
-    
-     const create = async (gameData) => {
+    const create = async (gameData) => {
         const result = await request.post(baseUrl, gameData);
+    
         return result;
     };
-    
-    const edit = (gameId, data) => request.put(`${baseUrl}/${gameId}`, data);
-    
 
-    const deleteGame = (gameId) =>  request.del(`${baseUrl}/${gameId}`);
-    
-  
+    const edit = (gameId, data) => request.put(`${baseUrl}/${gameId}`, data);
+
+    const deleteGame = (gameId) => request.delete(`${baseUrl}/${gameId}`);
+
     return {
         getAll,
         getOne,
@@ -36,7 +36,6 @@ export const gameServiceFactory = (token) => {
         deleteGame,
         create,
     };
-
 };
 
 

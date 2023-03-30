@@ -10,10 +10,11 @@ export const GameOwner = ({
     const { gameId } = useParams();
     const { userId } = useAuthContext();
     const { getGameById } = useGameContext();
+    
     const currentGame = getGameById(gameId);
 
     if(currentGame && currentGame._ownerId !== userId){
-        return <Navigate to={`/catalogue/${gameId}`} replace />
+        return <Navigate to={`/catalogue/${gameId}`} />
     }
 
     return children ? children : <Outlet />

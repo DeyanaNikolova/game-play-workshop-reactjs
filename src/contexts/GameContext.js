@@ -17,7 +17,7 @@ export const GameProvider = ({
             .then(result => {
                 setGames(result);
             })
-    },  [gameService]);
+    },  []);
 
     const onCreateGameSubmit = async (data) => {
 
@@ -64,4 +64,4 @@ export const useGameContext = () => {
     const context = useContext(GameContext);
 
     return context;
-}
+};

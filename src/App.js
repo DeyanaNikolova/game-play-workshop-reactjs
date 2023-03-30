@@ -23,6 +23,7 @@ function App() {
             <GameProvider>
                 <div id="box">
                     <Header />
+
                     <main id="main-content">
                         <Routes>
                             <Route path='/' element={<Home />} />
@@ -48,6 +49,7 @@ function App() {
                         } /> */}
                         </Routes>
                     </main>
+                    
                     <Footer />
                 </div>
             </GameProvider>
