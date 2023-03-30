@@ -1,30 +1,31 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useGameContext } from '../../contexts/GameContext';
 
 import { useForm } from '../../hooks/useForm';
 import { useService } from '../../hooks/useService';
 import { gameServiceFactory } from '../../services/gameService';
 
-export const EditGame = ({
-    onEditGameSubmit,
-}) => {
+export const EditGame = () => {
+
+    const { onEditGameSubmit } = useGameContext();
     const { gameId } = useParams();
     const gameService = useService(gameServiceFactory);
     const { values, changeHandler, onSubmit, changeValues } = useForm({
         _id: '',
         title: '',
-        category: '', 
+        category: '',
         maxLevel: '',
         imageUrl: '',
         summary: ''
     }, onEditGameSubmit);
 
     useEffect(() => {
-gameService.getOne(gameId)
-        .then(result => {
-            changeValues(result);
-        });
-    }, [gameId]);
+        gameService.getOne(gameId)
+            .then(result => {
+                changeValues(result);
+            });
+    }, [gameId, gameService, changeValues]);
 
 
     return (

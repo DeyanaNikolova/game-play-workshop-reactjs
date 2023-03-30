@@ -1,8 +1,9 @@
+import { useGameContext } from '../../contexts/GameContext';
 import { CatalogueItem } from './CatalogueItem/CatalogueItem'
 
-export const Catalogue = ({
-    games
-}) => {
+export const Catalogue = () => {
+    const { games } = useGameContext();
+    
     return (
         <section id="catalog-page">
             <h1>All Games</h1>
