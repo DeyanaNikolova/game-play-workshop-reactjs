@@ -16,6 +16,7 @@ import { CreateGame } from './components/CreateGame/CreateGame';
 import { Catalogue } from './components/Catalogue/Catalogue';
 import { GameDetails } from './components/GameDetails/GameDetails';
 import { EditGame } from './components/EditGame/EditGame';
+import { RouteGuard } from './components/common/RouteGuard';
 
 function App() {
     const navigate = useNavigate();
@@ -41,7 +42,7 @@ function App() {
         const editGame = await gameService.edit(values._id, values);
 
         setGames(state => state.map(x => x._id === values._id ? editGame : x));
-        
+
         navigate(`/catalogue/${values._id}`);
     };
 
@@ -54,11 +55,20 @@ function App() {
                         <Route path='/' element={<Home />} />
                         <Route path='/login' element={<Login />} />
                         <Route path='/register' element={<Register />} />
-                        <Route path='/logout' element={<Logout />} />
-                        <Route path='/create-game' element={<CreateGame onCreateGameSubmit={onCreateGameSubmit} />} />
+                        
+                        {/* <Route path='/create-game' element={
+                            <RouteGuard>
+                                <CreateGame onCreateGameSubmit={onCreateGameSubmit} />
+                            </RouteGuard>
+                        } /> */}
                         <Route path='/catalogue' element={<Catalogue games={games} />} />
                         <Route path='/catalogue/:gameId' element={<GameDetails />} />
-                        <Route path='/catalogue/:gameId/edit' element={<EditGame onEditGameSubmit={onEditGameSubmit} />} />
+
+                        <Route element={<RouteGuard /> }>
+                            <Route path='/catalogue/:gameId/edit' element={<EditGame onEditGameSubmit={onEditGameSubmit} />} />
+                            <Route path='/create-game' element={<CreateGame onCreateGameSubmit={onCreateGameSubmit} />} />
+                            <Route path='/logout' element={<Logout />} />
+                        </Route>
                     </Routes>
                 </main>
                 <Footer />

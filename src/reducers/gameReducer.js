@@ -1,4 +1,4 @@
-export const ganeReducer = (state, action) => {
+export const gameReducer = (state, action) => {
 
     switch (action.type) {
         case 'GAME_FETCH':

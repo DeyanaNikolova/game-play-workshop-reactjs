@@ -7,7 +7,7 @@ import { useService } from '../../hooks/useService';
 import { useAuthContext } from '../../contexts/AuthContext';
 
 import { AddComment } from './AddComment/AddComment';
-import { gameReducer } from '../../reducer/gameReducer';
+import { gameReducer } from '../../reducers/gameReducer';
 
 
 export const GameDetails = () => {
