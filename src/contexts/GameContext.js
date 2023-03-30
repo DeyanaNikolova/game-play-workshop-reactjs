@@ -6,7 +6,7 @@ import { gameServiceFactory } from '../services/gameService';
 export const GameContext = createContext();
 
 export const GameProvider = ({
-    children
+    children,
 }) => {
     const navigate = useNavigate();
     const [games, setGames] = useState([]);
@@ -15,48 +15,46 @@ export const GameProvider = ({
     useEffect(() => {
         gameService.getAll()
             .then(result => {
-                setGames(result);
+                setGames(result)
             })
-    },  []);
+    }, []);
 
     const onCreateGameSubmit = async (data) => {
-
         const newGame = await gameService.create(data);
 
         setGames(state => [...state, newGame]);
-        navigate('/catalogue');
+
+        navigate('/catalog');
     };
 
-    const onEditGameSubmit = async (values) => {
-        const editGame = await gameService.edit(values._id, values);
+    const onGameEditSubmit = async (values) => {
+        const result = await gameService.edit(values._id, values);
 
-        setGames(state => state.map(x => x._id === values._id ? editGame : x));
+        setGames(state => state.map(x => x._id === values._id ? result : x))
 
-        navigate(`/catalogue/${values._id}`);
-    };
-
-    const getGameById = (gameId) => {
-        return games.find(game => game._id === gameId)
+        navigate(`/catalog/${values._id}`);
     };
 
     const deleteGame = (gameId) => {
         setGames(state => state.filter(game => game._id !== gameId));
     };
 
+    const getGame = (gameId) => {
+        return games.find(game => game._id === gameId);
+    };
+
     const contextValues = {
         games,
         onCreateGameSubmit,
-        onEditGameSubmit,
-        getGameById,
-        deleteGame
+        onGameEditSubmit,
+        deleteGame,
+        getGame,
     };
 
     return (
-        <>
-        <GameContext.Provider value ={contextValues}>
+        <GameContext.Provider value={contextValues}>
             {children}
         </GameContext.Provider>
-        </>
     );
 };
 

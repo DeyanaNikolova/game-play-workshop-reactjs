@@ -19,20 +19,19 @@ export const GameDetails = () => {
     const gameService = useService(gameServiceFactory);
     const navigate = useNavigate();
 
-
     useEffect(() => {
         Promise.all([
             gameService.getOne(gameId),
-            commentService.getAll(gameId)
-        ])
-            .then(([gameData, comments]) => {
-                const gameState = {
-                    ...gameData,
-                    comments,
-                }
-                dispatch({ type: 'GAME_FETCH', payload: gameState });
-            });
-    }, [gameId, gameService]);
+            commentService.getAll(gameId),
+        ]).then(([gameData, comments]) => {
+            const gameState = {
+                ...gameData,
+                comments,
+            };
+            
+            dispatch({type: 'GAME_FETCH', payload: gameState})
+        });
+    }, [gameId]);
 
 
     const onCommentSubmit = async (values) => {
@@ -41,22 +40,22 @@ export const GameDetails = () => {
         dispatch({
             type: 'COMMENT_ADD',
             payload: response,
-            userEmail
+            userEmail,
         });
-    }
+    };
 
     const isOwner = game._ownerId === userId;
 
     const onDeleteClick = async () => {
         // eslint-disable-next-line no-restricted-globals
-        const confirmed = confirm(`Are you sure you want to delele ${game.title}?`);
-        // showDeleteModal() 
-        if(confirmed){
-            await gameService.deleteGame(game._id);
+        const result = confirm(`Are you sure you want to delete ${game.title}`);
+
+        if (result) {
+            await gameService.delete(game._id);
 
             deleteGame(game._id);
 
-            navigate('/catalogue');
+            navigate('/catalog');
         }
     };
 
