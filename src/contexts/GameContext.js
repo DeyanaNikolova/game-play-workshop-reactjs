@@ -37,13 +37,18 @@ export const GameProvider = ({
 
     const getGameById = (gameId) => {
         return games.find(game => game._id === gameId)
-    }
+    };
+
+    const deleteGame = (gameId) => {
+        setGames(state => state.filter(game => game._id !== gameId));
+    };
 
     const contextValues = {
         games,
         onCreateGameSubmit,
         onEditGameSubmit,
-        getGameById
+        getGameById,
+        deleteGame
     };
 
     return (

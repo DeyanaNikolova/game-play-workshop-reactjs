@@ -1,4 +1,4 @@
-import { useEffect, useState, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
 import { gameServiceFactory } from '../../services/gameService';
@@ -8,10 +8,12 @@ import { useAuthContext } from '../../contexts/AuthContext';
 
 import { AddComment } from './AddComment/AddComment';
 import { gameReducer } from '../../reducers/gameReducer';
+import { useGameContext } from '../../contexts/GameContext';
 
 
 export const GameDetails = () => {
     const { gameId } = useParams();
+    const { deleteGame } = useGameContext();
     const { userId, isAuthenticated, userEmail } = useAuthContext();
     const [game, dispatch] = useReducer(gameReducer, {});
     const gameService = useService(gameServiceFactory);
@@ -30,7 +32,7 @@ export const GameDetails = () => {
                 }
                 dispatch({ type: 'GAME_FETCH', payload: gameState });
             });
-    }, [gameId]);
+    }, [gameId, gameService]);
 
 
     const onCommentSubmit = async (values) => {
@@ -45,9 +47,16 @@ export const GameDetails = () => {
     const isOwner = game._ownerId === userId;
 
     const onDeleteClick = async () => {
-        await gameService.deleteGame(game._id);
-        // TODO: delete from state
-        navigate('/catalogue');
+        //eslint-disable-next-line no-restricted-globals
+        const confirmed = confirm(`Are you sure you want to delele ${game.title}?`);
+        // showDeleteModal() 
+        if(confirmed){
+            await gameService.deleteGame(game._id);
+
+            deleteGame(game._id);
+
+            navigate('/catalogue');
+        }
     };
 
     return (
@@ -56,7 +65,7 @@ export const GameDetails = () => {
             <div className="info-section">
 
                 <div className="game-header">
-                    <img className="game-img" src={game.imageUrl} />
+                    <img className="game-img" src={game.imageUrl} alt="game-img"/>
                     <h1>{game.title}</h1>
                     <span className="levels">MaxLevel: {game.maxLevel}</span>
                     <p className="type">{game.category}</p>
